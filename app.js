@@ -63,3 +63,73 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ];
+
+const imageGallery = document.querySelector('.js-gallery');
+const modalWindow = document.querySelector('.js-lightbox');
+const modalBigImage = document.querySelector('.lightbox__image');
+const closeModalBtn = document.querySelector(
+  'button[data-action="close-lightbox"]'
+);
+const backdrop = document.querySelector('.lightbox__overlay');
+
+closeModalBtn.addEventListener('click', closeModalAction);
+
+imageGallery.addEventListener('click', galleryImageActions);
+imageGallery.addEventListener('click', modalActionImage);
+backdrop.addEventListener('click', onBackdropClose);
+
+imageGallery.insertAdjacentHTML(
+  'beforeend',
+  createImagesGalleryMarkup(galleryItems)
+);
+
+function createImagesGalleryMarkup(galleryItems) {
+  return galleryItems
+    .map(({ preview, original, description }) => {
+      return `
+<li class="gallery__item">
+  <a
+    class="gallery__link"
+    href="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
+  >
+    <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+  </a>
+</li>
+`;
+    })
+    .join('');
+}
+
+function galleryImageActions(e) {
+  e.preventDefault();
+}
+
+function modalActionImage(e) {
+  window.addEventListener('keydown', onEscKeyClose);
+  const bigImageURL = e.target.dataset.source;
+  modalWindow.classList.add('is-open');
+  modalBigImage.src = `${bigImageURL}`;
+}
+
+function closeModalAction() {
+  window.removeEventListener('keydown', onEscKeyClose);
+  modalWindow.classList.remove('is-open');
+  modalBigImage.src = '';
+}
+
+function onBackdropClose(e) {
+  if (e.currentTarget === e.target) {
+    closeModalAction();
+  }
+}
+
+function onEscKeyClose(e) {
+  if (e.code === 'Escape') {
+    closeModalAction();
+  }
+}
