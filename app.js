@@ -71,11 +71,11 @@ const closeModalBtn = document.querySelector(
   'button[data-action="close-lightbox"]'
 );
 const backdrop = document.querySelector('.lightbox__overlay');
+let current = undefined;
 
 closeModalBtn.addEventListener('click', closeModalAction);
 
-imageGallery.addEventListener('click', galleryImageActions);
-imageGallery.addEventListener('click', modalActionImage);
+imageGallery.addEventListener('click', openModalWindow);
 backdrop.addEventListener('click', onBackdropClose);
 
 imageGallery.insertAdjacentHTML(
@@ -105,15 +105,15 @@ function createImagesGalleryMarkup(galleryItems) {
     .join('');
 }
 
-function galleryImageActions(e) {
+function openModalWindow(e) {
   e.preventDefault();
-}
-
-function modalActionImage(e) {
   window.addEventListener('keydown', onEscKeyClose);
-  const bigImageURL = e.target.dataset.source;
+  window.addEventListener('keydown', modalImageSlider);
+
+  console.log(e.target.dataset.source);
   modalWindow.classList.add('is-open');
-  modalBigImage.src = `${bigImageURL}`;
+  modalBigImage.src = `${e.target.dataset.source}`;
+  current = e.target.src;
 }
 
 function closeModalAction() {
@@ -132,4 +132,34 @@ function onEscKeyClose(e) {
   if (e.code === 'Escape') {
     closeModalAction();
   }
+}
+
+function modalImageSlider(e) {
+  const elements = imageGallery.querySelectorAll('.gallery__image');
+  debugger;
+
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].setAttribute('id', i + 1);
+  }
+
+  var array = Array.prototype.slice.call(elements);
+  let currentElem = array.filter(elem => elem.src === current);
+  let intId = parseInt(currentElem[0].id);
+  let nextId = intId;
+  if (e.code === 'ArrowLeft') {
+    if (intId > 1) {
+      nextId = intId - 1;
+    } else {
+      nextId = elements.length;
+    }
+  } else if (e.code === 'ArrowRight') {
+    if (intId < elements.length) {
+      nextId = nextId + 1;
+    } else {
+      nextId = 1;
+    }
+  }
+  let nextElem = array.filter(elem => elem.id === `${nextId}`);
+  modalBigImage.src = nextElem[0].dataset.source;
+  current = nextElem[0].src;
 }
