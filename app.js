@@ -136,15 +136,13 @@ function onEscKeyClose(e) {
 
 function modalImageSlider(e) {
   const elements = imageGallery.querySelectorAll('.gallery__image');
-  debugger;
-
   for (let i = 0; i < elements.length; i++) {
     elements[i].setAttribute('id', i + 1);
   }
 
-  var array = Array.prototype.slice.call(elements);
-  let currentElem = array.filter(elem => elem.src === current);
-  let intId = parseInt(currentElem[0].id);
+  const array = Array.prototype.slice.call(elements);
+  const currentElem = array.filter(elem => elem.src === current);
+  const intId = parseInt(currentElem[0].id);
   let nextId = intId;
   if (e.code === 'ArrowLeft') {
     if (intId > 1) {
@@ -159,7 +157,7 @@ function modalImageSlider(e) {
       nextId = 1;
     }
   }
-  let nextElem = array.filter(elem => elem.id === `${nextId}`);
+  const nextElem = array.filter(elem => elem.id === `${nextId}`);
   modalBigImage.src = nextElem[0].dataset.source;
   current = nextElem[0].src;
 }
